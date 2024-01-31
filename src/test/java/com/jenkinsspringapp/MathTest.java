@@ -8,7 +8,7 @@ class MathTest {
     void abs() {
         int number = -2;
         int results = Math.abs(number);
-        assertTrue(results>0);
+        assertEquals(88, results);
     }
 
     @Test
