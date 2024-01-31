@@ -1,12 +1,13 @@
 package com.jenkinsspringapp;
 public class Math {
-
     /**
      * Returns the absolute value of a number.
      * @param number The integer input.
      * @return The absolute value of number.
      */
     public static int abs(int number){
+        // If the number is negative, multiply by -1 to make it positive
+        // Otherwise, the number is already positive or zero
         return number<0? (number*(-1)):number;
     }
     /**
