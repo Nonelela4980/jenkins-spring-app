@@ -18,7 +18,7 @@ To build the Docker image for the Jenkins Spring App, follow these steps:
 2. Build the Docker image using the following command:
 
     ```bash
-    docker build -t jenkins-spring-app:release-0.0.1-SNAPSHOT .
+    docker build -t jenkins-spring-app:0.0.1 .
     ```
 
    This command will build the Docker image with the specified name and tag.
