@@ -4,30 +4,74 @@ pipeline{
         maven 'Maven'
     }
 
+    environment{
+        GIT_HUB_REPO = 'https://github.com/Nonelela4980/jenkins-spring-app.git'
+        GIT_HUB_REPO_BRANCH='main'
+        DOCKER_IMAGE_BUILD='docker build -t jenkins-spring-app:0.0.1 .'
+        DOCKER_START_CONTAINER='docker run -d -p 9635:9635 --name jenkins-spring-app jenkins-spring-app:0.0.1'
+        FAT_JAR_PATH='target/*.jar'
+        TESTS_REPORT_PATH= 'target/surefire-reports/*.xml'
+        DOCKER_CONTAINER='jenkins-spring-app'
+        DOCKER_IMAGE='jenkins-spring-app:0.0.1'
+    }
+
     stages{
+
         stage('checkout'){
             steps{
-                echo "================================[CHECKOUT]================================"
-                git branch: 'main', url: 'https://github.com/Nonelela4980/jenkins-spring-app.git', credentialsId: '[REPLACE_WITH_CREDENTIALS_ID]'
+                git branch: env.GIT_HUB_REPO_BRANCH, url: env.GIT_HUB_REPO, credentialsId: 'GIT_HUB_CREDENTIALS'
+                sh 'mvn verify --fail-never'
             }
         }
 
-        stage('TEST'){
+        stage('test'){
             steps{
-                echo "================================[CHECKOUT]================================"
                 sh """
-                    mvn verify --fail-never
                     mvn clean install
                     mvn test
                 """
-                }
+            }
         }
+
+        stage('build'){
+            //build jar file
+            steps{
+                sh "mvn package"
+            }
+        }
+
+        stage('docker image'){
+            steps{
+            //build docker image and start a container
+            sh"""
+                ${env.DOCKER_IMAGE_BUILD}
+                ${env.DOCKER_START_CONTAINER}
+            """
+            }
+        }
+
+        stage('Clean up'){
+            steps{
+                sh"""
+                    docker stop jenkins-spring-app
+                    docker rm ${DOCKER_CONTAINER}
+                    docker rmi ${DOCKER_IMAGE}
+                """
+            }
+        }
+
     }
 
    post {
-        always {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            junit 'target/surefire-reports/*.xml'
+           always {
+            archiveArtifacts artifacts: env.FAT_JAR_PATH, fingerprint: true
+            junit env.TESTS_REPORT_PATH
+            script{
+                // removes the target folder
+                if(fileExists('target')){
+                    sh "mvn clean"
+                }
+            }
         }
     }
 }

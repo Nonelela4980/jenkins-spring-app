@@ -16,6 +16,6 @@ RUN mvn clean install package
 
 RUN mv ./target/jenkins-spring-app-0.0.1-SNAPSHOT.jar ./release-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8081
+EXPOSE 9635
 
 CMD ["java", "-jar", "./release-0.0.1-SNAPSHOT.jar"]
