@@ -14,7 +14,7 @@ RUN mvn clean test
 #Build jar
 RUN mvn clean install package
 
-RUN mv ./target/jenkins-spring-app-0.0.1-SNAPSHOT.jar ./release-0.0.1-SNAPSHOT.jar
+RUN mv ./target/jenkins-spring-app-0.0.1.jar ./jenkins-spring-app-0.0.1.jar
 
 EXPOSE 9635
 
